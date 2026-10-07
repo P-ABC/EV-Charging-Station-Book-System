@@ -1,0 +1,42 @@
+Generated At : 2026-10-07 20:30:49 (+07:00)
+App Version  : 1.0
+Endianness   : Little-Endian
+Encoding     : UTF-8 (fixed-length) (ไฟล์รายงานใช้ UTF-8)
+Data Dir     : .
+
+[TABLE 1] Booking and reservation details
+--------------------------------------------------------------
++---------+------+----------+------------+-------+-------+-----------+----------+-----------------------+
+| Booking | PtID | Customer | Date       | Start | End   | Status    | Station  | Location              |
++---------+------+----------+------------+-------+-------+-----------+----------+-----------------------+
+| 1       | 1007 | Paul     | 2026-10-07 | 20:00 | 22:00 | Confirmed | EVS-0007 | Lat Phrao, Thairath 2 |
++---------+------+----------+------------+-------+-------+-----------+----------+-----------------------+
+
+
+[SUMMARY] Summary
+--------------------------------------------------------------
++----------------------------------+-----------------------------------------------------------+
+| Item                             | Value                                                     |
++----------------------------------+-----------------------------------------------------------+
+| Records in bookings.dat          | 1 records                                                 |
+| Confirmed bookings               | 1                                                         |
+| Completed bookings               | 0                                                         |
+| Cancelled bookings               | 0                                                         |
+| Currently booked charging points | 15                                                        |
+| Records in charge_points.dat     | 55 records                                                |
+| Records in index.dat             | 56 records                                                |
+| Events in charge_points.log      | 73 records                                                |
+| Booking file validation          | PASS                                                      |
+| Source files                     | bookings.dat, charge_points.dat, charge_points.log, in... |
++----------------------------------+-----------------------------------------------------------+
+
+[CONSISTENCY CHECK] Data consistency checks
+--------------------------------------------------------------
++----------------------------------------------------------+-----------------------+--------+
+| Check                                                    | Expected              | Result |
++----------------------------------------------------------+-----------------------+--------+
+| Booking binary record size                               | 66 bytes              | PASS   |
+| Every non-cancelled booking references an existing point | No invalid references | PASS   |
+| Confirmed bookings are represented by booking records    | 1                     | PASS   |
+| Point data available for booking report                  | Loaded                | PASS   |
++----------------------------------------------------------+-----------------------+--------+

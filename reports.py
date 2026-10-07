@@ -240,7 +240,7 @@ def build_report_points(data_dir: str,
     lines.append("")
 
     # ---- ตารางข้อมูลจริง --------------------------------------------
-    lines.append("[TABLE] All charging points (including deleted records)")
+    lines.append("[TABLE 1] All charging points (including deleted records)")
     lines.append("-" * 62)
     rows = []
     long_locations = []
@@ -375,42 +375,22 @@ def build_report_stats(data_dir: str,
     points_by_id = {p.point_id: p for p in points}
 
     lines = _header(data_dir)
-    lines.append("")
 
-    # ---- TABLE 1: Price and power statistics --------------------------
-    lines.append("[TABLE 1] Price and power statistics (active, non-deleted only)")
-    lines.append("-" * 62)
-    stat_rows = [
-        ["Record count", str(count), str(count)],
-        ["Minimum", f"{min(prices):.2f}" if prices else "-",
-         f"{stats['min']:.1f}"],
-        ["Maximum", f"{max(prices):.2f}" if prices else "-",
-         f"{stats['max']:.1f}"],
-        ["Average", f"{stats['price_avg']:.2f}",
-         f"{stats['avg']:.1f}"],
-    ]
-    lines.extend(render_table(["Statistic", "Price (THB/kWh)", "Power (kW)"],
-                              stat_rows))
     lines.append("")
+    # ---- TABLE 1: Recent log activity ----------------------------------
 
-    # ---- TABLE 2: Active charging points by connector ------------------
-    lines.append("[TABLE 2] Active charging points by connector type")
-    lines.append("-" * 62)
-    plug_rows = []
-    for plug in ("CCS2", "Type2", "CHAdeMO", "GB-T"):
-        plug_count = plug_counts.get(plug, 0)
-        percent = (plug_count / count * 100) if count else 0.0
-        plug_rows.append([plug, str(plug_count), f"{percent:.1f}"])
-    lines.extend(render_table(["Connector", "Count", "Share (%)"], plug_rows))
-    lines.append("")
+    lines.append(
+        f"[TABLE 1] Recent activity from {SOURCE_LOG_FILE} "
+        f"(latest {len(recent)} records)"
+    )
 
-    # ---- TABLE 3: Recent log activity ----------------------------------
-    lines.append(f"[TABLE 3] Recent activity from {SOURCE_LOG_FILE} "
-                 f"(latest {len(recent)} records)")
     lines.append("-" * 62)
+
     recent_rows = []
+
     for entry in sorted(recent, key=lambda item: item.ts, reverse=True):
         point = points_by_id.get(entry.point_id)
+
         recent_rows.append([
             format_timestamp(entry.ts),
             entry.op_name,
@@ -418,52 +398,118 @@ def build_report_stats(data_dir: str,
             point.status_text if point else "-",
             point.booked_text if point else "-",
             f"{point.price_per_kwh:.2f}" if point else "-",
-            "Found in index" if entry.point_id in index_map else "Missing from index",
+            "Found in index" if entry.point_id in index_map
+            else "Missing from index",
         ])
+
     lines.extend(render_table(
-        ["Timestamp", "Operation", "PtID", "Status", "Booked", "Price",
-         "Index check"], recent_rows))
+        ["Timestamp", "Operation", "PtID", "Status", "Booked",
+        "Price", "Index check"],
+        recent_rows
+    ))
+
     lines.append("")
 
     # ---- ส่วนสรุป -----------------------------------------------------
     total_ops = sum(op_counts.values())
     recent_ids_found = sum(1 for entry in recent
                            if entry.point_id in index_map)
-    summary_rows = [
-        ["Records used for statistics (active)", str(count)],
-        ["Average price (THB/kWh)", f"{stats['price_avg']:.2f}"],
-        ["Average power (kW)", f"{stats['avg']:.1f}"],
-        ["Total active connectors", str(sum(plug_counts.values()))],
-        ["Total log events", str(len(log_entries))],
-        ["ADD / UPDATE / DELETE / VIEW",
-         f"{op_counts[models.OP_ADD]} / {op_counts[models.OP_UPDATE]} / "
-         f"{op_counts[models.OP_DELETE]} / {op_counts[models.OP_VIEW]}"],
-        [f"Records in {SOURCE_INDEX_FILE}", f"{len(index_map)} records"],
-        ["Source files",
-         f"{SOURCE_POINT_FILE}, {SOURCE_LOG_FILE}, {SOURCE_INDEX_FILE}"],
-    ]
-    check_rows = [
-        ["Connector counts sum = active record count",
-         f"{sum(plug_counts.values())} = {count}",
-         "PASS" if sum(plug_counts.values()) == count else "FAIL"],
-        ["Operation counts sum = log event count",
-         f"{total_ops} = {len(log_entries)}",
-         "PASS" if total_ops == len(log_entries) else "FAIL"],
-        ["Displayed average matches source records",
-         f"{stats['price_avg']:.2f}",
-         "PASS" if prices else "FAIL (no data)"],
-        ["All recent events exist in index.dat",
-         f"{recent_ids_found} = {len(recent)}",
-         "PASS" if recent_ids_found == len(recent) else "FAIL"],
-        ["Minimum price <= average <= maximum price",
-         f"{min(prices):.2f} <= {stats['price_avg']:.2f} <= {max(prices):.2f}"
-         if prices else "-",
-         "PASS" if prices and min(prices) <= stats["price_avg"] <= max(prices)
-         else "FAIL (no data)"],
-    ]
-    lines.extend(_footer_section(summary_rows, check_rows))
-    return lines
+    # ---- Summary ------------------------------------------------------
 
+    recent_total = len(recent)
+
+    recent_op_counts = {
+        models.OP_ADD: 0,
+        models.OP_UPDATE: 0,
+        models.OP_DELETE: 0,
+        models.OP_VIEW: 0,
+    }
+
+    for entry in recent:
+        if entry.op_code in recent_op_counts:
+            recent_op_counts[entry.op_code] += 1
+
+    recent_ids_found = sum(
+        1 for entry in recent
+        if entry.point_id in index_map
+    )
+
+    recent_ids_missing = recent_total - recent_ids_found
+
+    summary_rows = [
+        ["Records displayed in Table 1", str(recent_total)],
+
+        ["ADD operations",
+        str(recent_op_counts[models.OP_ADD])],
+
+        ["UPDATE operations",
+        str(recent_op_counts[models.OP_UPDATE])],
+
+        ["DELETE operations",
+        str(recent_op_counts[models.OP_DELETE])],
+
+        ["VIEW operations",
+        str(recent_op_counts[models.OP_VIEW])],
+
+        ["Found in index.dat",
+        str(recent_ids_found)],
+
+        ["Missing from index.dat",
+        str(recent_ids_missing)],
+
+        ["Source files",
+        f"{SOURCE_LOG_FILE}, {SOURCE_POINT_FILE}, "
+        f"{SOURCE_INDEX_FILE}"],
+    ]
+
+    check_rows = [
+        [
+            "Displayed rows = recent log records",
+            f"{recent_total} = {len(recent)}",
+            "PASS" if recent_total == len(recent) else "FAIL",
+        ],
+
+        [
+            "Operation counts = displayed rows",
+            (
+                f"{recent_op_counts[models.OP_ADD]} + "
+                f"{recent_op_counts[models.OP_UPDATE]} + "
+                f"{recent_op_counts[models.OP_DELETE]} + "
+                f"{recent_op_counts[models.OP_VIEW]} = "
+                f"{recent_total}"
+            ),
+            (
+                "PASS"
+                if sum(recent_op_counts.values()) == recent_total
+                else "FAIL"
+            ),
+        ],
+
+        [
+            "Index found + missing = displayed rows",
+            f"{recent_ids_found} + {recent_ids_missing} = {recent_total}",
+            (
+                "PASS"
+                if recent_ids_found + recent_ids_missing == recent_total
+                else "FAIL"
+            ),
+        ],
+
+        [
+            "All displayed log records have valid point data",
+            f"{sum(1 for e in recent if e.point_id in points_by_id)} = {recent_total}",
+            (
+                "PASS"
+                if sum(1 for e in recent if e.point_id in points_by_id)
+                == recent_total
+                else "FAIL"
+            ),
+        ],
+    ]
+
+    lines.extend(_footer_section(summary_rows, check_rows))
+
+    return lines
 
 def build_report_booking(data_dir: str,
                         points: Sequence[models.ChargePoint],
@@ -491,6 +537,16 @@ def build_report_booking(data_dir: str,
     rows = []
     for booking in booking_entries:
         point = points_by_id.get(booking.point_id)
+
+        if point:
+            location = _full_location(point, locations)
+            english_location = english_location_label(location)
+            table_location = english_location or location
+            station_code = point.station_code
+        else:
+            table_location = "-"
+            station_code = "-"
+
         rows.append([
             str(booking.booking_id),
             str(booking.point_id),
@@ -499,9 +555,10 @@ def build_report_booking(data_dir: str,
             booking.start_time,
             booking.end_time,
             booking.status_text,
-            point.station_code if point else "-",
-            point.location if point else "-",
+            station_code,
+            table_location,
         ])
+        
     if rows:
         lines.extend(render_table(
             ["Booking", "PtID", "Customer", "Date", "Start", "End",
@@ -511,23 +568,16 @@ def build_report_booking(data_dir: str,
         lines.append("(No booking records)")
     lines.append("")
 
-    lines.append("[TABLE 2] Booking status summary")
-    lines.append("-" * 62)
     confirmed = sum(b.status == bookings.STATUS_CONFIRMED for b in booking_entries)
     completed = sum(b.status == bookings.STATUS_COMPLETED for b in booking_entries)
     cancelled = sum(b.status == bookings.STATUS_CANCELLED for b in booking_entries)
+
     point_ids = {p.point_id for p in points if not p.is_deleted}
-    invalid_point_refs = sum(b.point_id not in point_ids for b in booking_entries
-                             if b.status != bookings.STATUS_CANCELLED)
-    status_rows = [
-        ["Confirmed", str(confirmed)],
-        ["Completed", str(completed)],
-        ["Cancelled", str(cancelled)],
-        ["Total bookings", str(len(booking_entries))],
-        ["Bookings referencing active points", str(len(booking_entries) - invalid_point_refs)],
-        ["Invalid point references", str(invalid_point_refs)],
-    ]
-    lines.extend(render_table(["Status / Check", "Count"], status_rows))
+    invalid_point_refs = sum(
+        b.point_id not in point_ids
+        for b in booking_entries
+        if b.status != bookings.STATUS_CANCELLED
+    )
     lines.append("")
 
     deleted = sum(p.is_deleted for p in points)
@@ -616,6 +666,12 @@ def generate_all_reports(data_dir: str,
                 index_map,
                 **kwargs
             )
+
+            with open(path, "w", encoding="utf-8", newline="\n") as fh:
+                fh.write("\n".join(lines) + "\n")
+
+            created[file_name] = path
+
     finally:
         set_alignment_mode(previous_alignment == "smart")
     return created

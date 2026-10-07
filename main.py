@@ -479,6 +479,142 @@ class ChargingStationApp:
               f"(ช่องว่างที่นำกลับมาใช้ได้: {len(self.store.free_slots)})")
         return True
 
+    # ------------------------------------------------------------------
+    # เมนู 4) Booking Management
+    # ------------------------------------------------------------------
+    def menu_booking(self) -> None:
+        print("\n=== Booking Management ===")
+        print("   1) Add Booking")
+        print("   2) Complete Booking")
+        print("   3) Cancel Booking")
+        print("   4) View Bookings")
+        choice = validators.ask_menu_choice("   เลือก [1-4] : ", (1, 2, 3, 4))
+        if choice == 1:
+            self.add_booking()
+        elif choice == 2:
+            self.complete_booking()
+        elif choice == 3:
+            self.cancel_booking()
+        else:
+            self.view_bookings()
+
+    @staticmethod
+    def _ask_date(label: str) -> str:
+        while True:
+            value = input(f"   {label} (YYYY-MM-DD): ").strip()
+            try:
+                return bookings.validate_date(value)
+            except ValueError:
+                print("   [ข้อผิดพลาด] รูปแบบวันที่ไม่ถูกต้อง")
+
+    @staticmethod
+    def _ask_time(label: str) -> str:
+        while True:
+            value = input(f"   {label} (HH:MM): ").strip()
+            try:
+                return bookings.validate_time(value)
+            except ValueError:
+                print("   [ข้อผิดพลาด] รูปแบบเวลาไม่ถูกต้อง")
+
+    def add_booking(self) -> Optional[bookings.Booking]:
+        print("\n--- Add Booking ---")
+        point_id = validators.ask_point_id()
+        slot = self.store.find_slot(point_id)
+        if slot is None:
+            print(f"   [ไม่พบ] point_id={point_id}")
+            return None
+        point = self.store.read_at(slot)
+        if point.is_deleted or point.status != 1:
+            print("   [ไม่สามารถจอง] หัวชาร์จถูกลบหรือไม่พร้อมใช้งาน")
+            return None
+        if point.is_booked == 1 or self.booking_store.active_for_point(point_id):
+            print("   [ไม่สามารถจอง] หัวชาร์จนี้มีการจองอยู่แล้ว")
+            return None
+
+        customer = input("   Customer name: ").strip()
+        if not customer:
+            print("   [ยกเลิก] ต้องระบุชื่อลูกค้า")
+            return None
+        date = self._ask_date("Booking date")
+        start = self._ask_time("Start time")
+        end = self._ask_time("End time")
+        if start >= end:
+            print("   [ข้อผิดพลาด] End time ต้องมากกว่า Start time")
+            return None
+
+        booking = bookings.Booking(
+            booking_id=self.booking_store.next_id(), point_id=point_id,
+            customer_name=customer, booking_date=date,
+            start_time=start, end_time=end,
+            status=bookings.STATUS_CONFIRMED, created_at=models.now_timestamp(),
+        )
+        self.booking_store.append(booking)
+        self.update_record(point_id, is_booked=1)
+        print(f"   [สำเร็จ] สร้าง booking_id={booking.booking_id}")
+        return booking
+
+    def _change_booking_status(self, status: int) -> Optional[bookings.Booking]:
+        booking_id = int(input("   Booking ID: ").strip())
+        booking = self.booking_store.find(booking_id)
+        if booking is None:
+            print("   [ไม่พบ] ไม่พบ booking นี้")
+            return None
+        if booking.status != bookings.STATUS_CONFIRMED:
+            print(f"   [ไม่สามารถทำรายการ] สถานะปัจจุบันคือ {booking.status_text}")
+            return None
+        updated = bookings.Booking(
+            booking.booking_id, booking.point_id, booking.customer_name,
+            booking.booking_date, booking.start_time, booking.end_time,
+            status, booking.created_at)
+        self.booking_store.update(updated)
+
+        if not self.booking_store.active_for_point(booking.point_id):
+            slot = self.store.find_slot(booking.point_id)
+            if slot is not None:
+                point = self.store.read_at(slot)
+                if not point.is_deleted and point.is_booked:
+                    self.update_record(booking.point_id, is_booked=0)
+        print(f"   [สำเร็จ] booking_id={booking_id} -> {updated.status_text}")
+        return updated
+
+    def complete_booking(self) -> Optional[bookings.Booking]:
+        print("\n--- Complete Booking ---")
+        return self._change_booking_status(bookings.STATUS_COMPLETED)
+
+    def cancel_booking(self) -> Optional[bookings.Booking]:
+        print("\n--- Cancel Booking ---")
+        return self._change_booking_status(bookings.STATUS_CANCELLED)
+
+    def view_bookings(self) -> None:
+        print("\n--- Booking List ---")
+        entries = self.booking_store.read_all()
+        if not entries:
+            print("   (ยังไม่มี booking)")
+            return
+        rows = []
+        for b in entries:
+            rows.append((str(b.booking_id), str(b.point_id), b.customer_name,
+                         b.booking_date, b.start_time, b.end_time, b.status_text))
+        for line in report_module.render_table(
+                ["Booking", "PtID", "Customer", "Date", "Start", "End", "Status"], rows,
+                max_width=None):
+            print(line)
+
+    def menu_report(self) -> None:
+        """แสดงเมนูย่อยของการสร้างรายงาน (เมนู 6 ของเมนูหลัก)
+
+        เกณฑ์ข้อ 6: ทุกงานรวมถึงการดูรายงานต้องทำผ่านเมนูชุดเดียวกัน
+        โดยไม่ต้องรันโปรแกรมแยกอีก
+        """
+        print("\n=== Generate Report Menu ===")
+        print("   1) สร้างรายงานทั้ง 3 ชุด (ไฟล์ .txt แยกกัน)")
+        print("   2) แสดงรายการไฟล์รายงานที่มีอยู่")
+        choice = validators.ask_menu_choice("   เลือก [1-2] : ", (1, 2))
+        if choice == 1:
+            self.generate_report()
+        else:
+            self.show_report_files()
+            
     def menu_booking(self) -> None:
         """เมนูจัดการการจอง"""
 
@@ -857,141 +993,6 @@ class ChargingStationApp:
             print("   index.dat สอดคล้องกับ charge_points.log ทั้งหมด")
         print(f"   ช่องว่างที่นำกลับมาใช้ได้: {self.store.free_slot_count()} ช่อง")
 
-    # ------------------------------------------------------------------
-    # เมนู 7) Booking Management
-    # ------------------------------------------------------------------
-    def menu_booking(self) -> None:
-        print("\n=== Booking Management ===")
-        print("   1) Add Booking")
-        print("   2) Complete Booking")
-        print("   3) Cancel Booking")
-        print("   4) View Bookings")
-        choice = validators.ask_menu_choice("   เลือก [1-4] : ", (1, 2, 3, 4))
-        if choice == 1:
-            self.add_booking()
-        elif choice == 2:
-            self.complete_booking()
-        elif choice == 3:
-            self.cancel_booking()
-        else:
-            self.view_bookings()
-
-    @staticmethod
-    def _ask_date(label: str) -> str:
-        while True:
-            value = input(f"   {label} (YYYY-MM-DD): ").strip()
-            try:
-                return bookings.validate_date(value)
-            except ValueError:
-                print("   [ข้อผิดพลาด] รูปแบบวันที่ไม่ถูกต้อง")
-
-    @staticmethod
-    def _ask_time(label: str) -> str:
-        while True:
-            value = input(f"   {label} (HH:MM): ").strip()
-            try:
-                return bookings.validate_time(value)
-            except ValueError:
-                print("   [ข้อผิดพลาด] รูปแบบเวลาไม่ถูกต้อง")
-
-    def add_booking(self) -> Optional[bookings.Booking]:
-        print("\n--- Add Booking ---")
-        point_id = validators.ask_point_id()
-        slot = self.store.find_slot(point_id)
-        if slot is None:
-            print(f"   [ไม่พบ] point_id={point_id}")
-            return None
-        point = self.store.read_at(slot)
-        if point.is_deleted or point.status != 1:
-            print("   [ไม่สามารถจอง] หัวชาร์จถูกลบหรือไม่พร้อมใช้งาน")
-            return None
-        if point.is_booked == 1 or self.booking_store.active_for_point(point_id):
-            print("   [ไม่สามารถจอง] หัวชาร์จนี้มีการจองอยู่แล้ว")
-            return None
-
-        customer = input("   Customer name: ").strip()
-        if not customer:
-            print("   [ยกเลิก] ต้องระบุชื่อลูกค้า")
-            return None
-        date = self._ask_date("Booking date")
-        start = self._ask_time("Start time")
-        end = self._ask_time("End time")
-        if start >= end:
-            print("   [ข้อผิดพลาด] End time ต้องมากกว่า Start time")
-            return None
-
-        booking = bookings.Booking(
-            booking_id=self.booking_store.next_id(), point_id=point_id,
-            customer_name=customer, booking_date=date,
-            start_time=start, end_time=end,
-            status=bookings.STATUS_CONFIRMED, created_at=models.now_timestamp(),
-        )
-        self.booking_store.append(booking)
-        self.update_record(point_id, is_booked=1)
-        print(f"   [สำเร็จ] สร้าง booking_id={booking.booking_id}")
-        return booking
-
-    def _change_booking_status(self, status: int) -> Optional[bookings.Booking]:
-        booking_id = int(input("   Booking ID: ").strip())
-        booking = self.booking_store.find(booking_id)
-        if booking is None:
-            print("   [ไม่พบ] ไม่พบ booking นี้")
-            return None
-        if booking.status != bookings.STATUS_CONFIRMED:
-            print(f"   [ไม่สามารถทำรายการ] สถานะปัจจุบันคือ {booking.status_text}")
-            return None
-        updated = bookings.Booking(
-            booking.booking_id, booking.point_id, booking.customer_name,
-            booking.booking_date, booking.start_time, booking.end_time,
-            status, booking.created_at)
-        self.booking_store.update(updated)
-
-        if not self.booking_store.active_for_point(booking.point_id):
-            slot = self.store.find_slot(booking.point_id)
-            if slot is not None:
-                point = self.store.read_at(slot)
-                if not point.is_deleted and point.is_booked:
-                    self.update_record(booking.point_id, is_booked=0)
-        print(f"   [สำเร็จ] booking_id={booking_id} -> {updated.status_text}")
-        return updated
-
-    def complete_booking(self) -> Optional[bookings.Booking]:
-        print("\n--- Complete Booking ---")
-        return self._change_booking_status(bookings.STATUS_COMPLETED)
-
-    def cancel_booking(self) -> Optional[bookings.Booking]:
-        print("\n--- Cancel Booking ---")
-        return self._change_booking_status(bookings.STATUS_CANCELLED)
-
-    def view_bookings(self) -> None:
-        print("\n--- Booking List ---")
-        entries = self.booking_store.read_all()
-        if not entries:
-            print("   (ยังไม่มี booking)")
-            return
-        rows = []
-        for b in entries:
-            rows.append((str(b.booking_id), str(b.point_id), b.customer_name,
-                         b.booking_date, b.start_time, b.end_time, b.status_text))
-        for line in report_module.render_table(
-                ["Booking", "PtID", "Customer", "Date", "Start", "End", "Status"], rows,
-                max_width=None):
-            print(line)
-
-    def menu_report(self) -> None:
-        """แสดงเมนูย่อยของการสร้างรายงาน (เมนู 6 ของเมนูหลัก)
-
-        เกณฑ์ข้อ 6: ทุกงานรวมถึงการดูรายงานต้องทำผ่านเมนูชุดเดียวกัน
-        โดยไม่ต้องรันโปรแกรมแยกอีก
-        """
-        print("\n=== Generate Report Menu ===")
-        print("   1) สร้างรายงานทั้ง 3 ชุด (ไฟล์ .txt แยกกัน)")
-        print("   2) แสดงรายการไฟล์รายงานที่มีอยู่")
-        choice = validators.ask_menu_choice("   เลือก [1-2] : ", (1, 2))
-        if choice == 1:
-            self.generate_report()
-        else:
-            self.show_report_files()
 
     # ------------------------------------------------------------------
     # เมนูหลัก + การออกอย่างปลอดภัย
@@ -1007,10 +1008,10 @@ class ChargingStationApp:
         print("  1) Add (เพิ่ม)")
         print("  2) Update (แก้ไข)")
         print("  3) Delete (ลบแบบ soft delete)")
-        print("  4) View (ดู)")
-        print("  5) Generate Report (.txt x3)")
-        print("  6) Tools (ข้อมูลตัวอย่าง / ซ่อมดัชนี / ตรวจไฟล์)")
-        print("  7) Booking Management (จัดการการจอง)")
+        print("  4) Booking Management (จัดการการจอง)")
+        print("  5) View (ดู)")
+        print("  6) Generate Report (.txt x3)")
+        print("  7) Tools (ข้อมูลตัวอย่าง / ซ่อมดัชนี / ตรวจไฟล์)")
         print("  0) Exit (ออกจากโปรแกรม)")
 
     def run(self) -> int:
