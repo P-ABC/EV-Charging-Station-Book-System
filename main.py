@@ -28,6 +28,7 @@ from typing import List, Optional
 import index as index_module
 import logger as logger_module
 import models
+import bookings
 import report as report_module
 import reports as reports_module
 import seed_data
@@ -42,7 +43,7 @@ class ChargingStationApp:
     """คลาสหลักของโปรแกรม เชื่อม storage / log / index / report เข้าด้วยกัน
 
     Attributes:
-        data_dir: โฟลเดอร์ที่เก็บไฟล์ข้อมูลทั้ง 3 ไฟล์ + รายงาน
+        data_dir: โฟลเดอร์ที่เก็บไฟล์ข้อมูลทั้งหมด 4 ไฟล์ + รายงาน
     """
 
     def __init__(self, data_dir: str = ".") -> None:
@@ -54,17 +55,19 @@ class ChargingStationApp:
         self.report_path = os.path.join(self.data_dir, models.REPORT_FILE_NAME)
         self.location_path = os.path.join(self.data_dir,
                                           models.LOCATION_FILE_NAME)
+        self.booking_path = os.path.join(self.data_dir, models.BOOKING_FILE_NAME)
 
         self.store = storage_module.ChargePointStore(self.data_path)
         self.audit = logger_module.AuditLog(self.log_path)
         self.point_index = index_module.PointIndex(self.index_path)
         self.location_store = storage_module.LocationStore(self.location_path)
+        self.booking_store = bookings.BookingStore(self.booking_path)
 
     # ------------------------------------------------------------------
     # การตรวจความถูกต้องของไฟล์ตอนเริ่มโปรแกรม
     # ------------------------------------------------------------------
     def startup_check(self, auto_repair: bool = True) -> List[str]:
-        """ตรวจไฟล์ทั้ง 3 ไฟล์ตอนเริ่มโปรแกรม และซ่อมแซมที่ทำได้อัตโนมัติ
+        """ตรวจไฟล์ทั้งหมด 4 ไฟล์ตอนเริ่มโปรแกรม และซ่อมแซมที่ทำได้อัตโนมัติ
 
         ตรวจสอบ
             1. ขนาดไฟล์หารลงด้วย RECORD_SIZE ของแต่ละไฟล์หรือไม่
@@ -85,6 +88,8 @@ class ChargingStationApp:
              self.audit.truncate_incomplete),
             (models.INDEX_FILE_NAME, self.point_index.integrity_check,
              self.point_index.truncate_incomplete),
+            (models.BOOKING_FILE_NAME, self.booking_store.integrity_check,
+             self.booking_store.truncate_incomplete),
         ):
             valid, remainder = checker()
             if not valid:
@@ -661,7 +666,7 @@ class ChargingStationApp:
     def generate_report(self, silent: bool = False) -> Dict[str, str]:
         """สร้างรายงานทั้ง 3 ชุดเป็นไฟล์ .txt แยกกัน จากข้อมูลปัจจุบัน
 
-        อ่านข้อมูลสดจากทั้ง 3 ไฟล์ไบนารีทุกครั้งที่เรียก จึงสะท้อนผลการ
+        อ่านข้อมูลสดจากทั้งหมด 4 ไฟล์ไบนารีทุกครั้งที่เรียก จึงสะท้อนผลการ
         แก้ไข/เพิ่ม/ลบข้อมูลล่าสุดเสมอ (เกณฑ์ข้อ 6)
 
         Returns:
@@ -679,6 +684,8 @@ class ChargingStationApp:
             store_valid=store_valid, log_valid=log_valid,
             index_valid=index_valid,
             locations=self.location_store.as_dict(),
+            booking_entries=self.booking_store.read_all(),
+            booking_valid=self.booking_store.integrity_check()[0],
         )
         if not silent:
             summary = report_module.compute_summary(points)
@@ -727,7 +734,7 @@ class ChargingStationApp:
         print("\n=== Tools Menu ===")
         print("   1) โหลดข้อมูลตัวอย่าง (55 record) — เขียนทับข้อมูลเดิม")
         print("   2) สร้าง index.dat ใหม่จาก charge_points.log")
-        print("   3) ตรวจสอบความถูกต้องของไฟล์ทั้ง 3 ไฟล์")
+        print("   3) ตรวจสอบความถูกต้องของไฟล์ทั้งหมด 4 ไฟล์")
         print(f"   4) โหมดจัดความกว้างตาราง (ปัจจุบัน: {report_module.alignment_mode_name()})")
         choice = validators.ask_menu_choice("   เลือก [1-4] : ", (1, 2, 3, 4))
 
@@ -787,10 +794,11 @@ class ChargingStationApp:
         self.audit = logger_module.AuditLog(self.log_path)
         self.point_index = index_module.PointIndex(self.index_path)
         self.location_store = storage_module.LocationStore(self.location_path)
+        self.booking_store = bookings.BookingStore(self.booking_path)
         self.store.refresh_free_slots()
 
     def check_file_health(self) -> None:
-        """ตรวจความถูกต้องของไฟล์ไบนารีทั้ง 3 ไฟล์และรายงานผล"""
+        """ตรวจความถูกต้องของไฟล์ไบนารีทั้งหมด 4 ไฟล์และรายงานผล"""
         print("\n--- ผลตรวจความถูกต้องของไฟล์ ---")
         for label, checker, path, record_size in (
             (models.DATA_FILE_NAME, self.store.integrity_check,
@@ -799,6 +807,8 @@ class ChargingStationApp:
              self.log_path, models.LOG_RECORD_SIZE),
             (models.INDEX_FILE_NAME, self.point_index.integrity_check,
              self.index_path, models.INDEX_RECORD_SIZE),
+            (models.BOOKING_FILE_NAME, self.booking_store.integrity_check,
+             self.booking_path, models.BOOKING_RECORD_SIZE),
         ):
             valid, remainder = checker()
             size = os.path.getsize(path)
@@ -815,6 +825,127 @@ class ChargingStationApp:
         else:
             print("   index.dat สอดคล้องกับ charge_points.log ทั้งหมด")
         print(f"   ช่องว่างที่นำกลับมาใช้ได้: {self.store.free_slot_count()} ช่อง")
+
+    # ------------------------------------------------------------------
+    # เมนู 7) Booking Management
+    # ------------------------------------------------------------------
+    def menu_booking(self) -> None:
+        print("\n=== Booking Management ===")
+        print("   1) Add Booking")
+        print("   2) Complete Booking")
+        print("   3) Cancel Booking")
+        print("   4) View Bookings")
+        choice = validators.ask_menu_choice("   เลือก [1-4] : ", (1, 2, 3, 4))
+        if choice == 1:
+            self.add_booking()
+        elif choice == 2:
+            self.complete_booking()
+        elif choice == 3:
+            self.cancel_booking()
+        else:
+            self.view_bookings()
+
+    @staticmethod
+    def _ask_date(label: str) -> str:
+        while True:
+            value = input(f"   {label} (YYYY-MM-DD): ").strip()
+            try:
+                return bookings.validate_date(value)
+            except ValueError:
+                print("   [ข้อผิดพลาด] รูปแบบวันที่ไม่ถูกต้อง")
+
+    @staticmethod
+    def _ask_time(label: str) -> str:
+        while True:
+            value = input(f"   {label} (HH:MM): ").strip()
+            try:
+                return bookings.validate_time(value)
+            except ValueError:
+                print("   [ข้อผิดพลาด] รูปแบบเวลาไม่ถูกต้อง")
+
+    def add_booking(self) -> Optional[bookings.Booking]:
+        print("\n--- Add Booking ---")
+        point_id = validators.ask_point_id()
+        slot = self.store.find_slot(point_id)
+        if slot is None:
+            print(f"   [ไม่พบ] point_id={point_id}")
+            return None
+        point = self.store.read_at(slot)
+        if point.is_deleted or point.status != 1:
+            print("   [ไม่สามารถจอง] หัวชาร์จถูกลบหรือไม่พร้อมใช้งาน")
+            return None
+        if point.is_booked == 1 or self.booking_store.active_for_point(point_id):
+            print("   [ไม่สามารถจอง] หัวชาร์จนี้มีการจองอยู่แล้ว")
+            return None
+
+        customer = input("   Customer name: ").strip()
+        if not customer:
+            print("   [ยกเลิก] ต้องระบุชื่อลูกค้า")
+            return None
+        date = self._ask_date("Booking date")
+        start = self._ask_time("Start time")
+        end = self._ask_time("End time")
+        if start >= end:
+            print("   [ข้อผิดพลาด] End time ต้องมากกว่า Start time")
+            return None
+
+        booking = bookings.Booking(
+            booking_id=self.booking_store.next_id(), point_id=point_id,
+            customer_name=customer, booking_date=date,
+            start_time=start, end_time=end,
+            status=bookings.STATUS_CONFIRMED, created_at=models.now_timestamp(),
+        )
+        self.booking_store.append(booking)
+        self.update_record(point_id, is_booked=1)
+        print(f"   [สำเร็จ] สร้าง booking_id={booking.booking_id}")
+        return booking
+
+    def _change_booking_status(self, status: int) -> Optional[bookings.Booking]:
+        booking_id = int(input("   Booking ID: ").strip())
+        booking = self.booking_store.find(booking_id)
+        if booking is None:
+            print("   [ไม่พบ] ไม่พบ booking นี้")
+            return None
+        if booking.status != bookings.STATUS_CONFIRMED:
+            print(f"   [ไม่สามารถทำรายการ] สถานะปัจจุบันคือ {booking.status_text}")
+            return None
+        updated = bookings.Booking(
+            booking.booking_id, booking.point_id, booking.customer_name,
+            booking.booking_date, booking.start_time, booking.end_time,
+            status, booking.created_at)
+        self.booking_store.update(updated)
+
+        if not self.booking_store.active_for_point(booking.point_id):
+            slot = self.store.find_slot(booking.point_id)
+            if slot is not None:
+                point = self.store.read_at(slot)
+                if not point.is_deleted and point.is_booked:
+                    self.update_record(booking.point_id, is_booked=0)
+        print(f"   [สำเร็จ] booking_id={booking_id} -> {updated.status_text}")
+        return updated
+
+    def complete_booking(self) -> Optional[bookings.Booking]:
+        print("\n--- Complete Booking ---")
+        return self._change_booking_status(bookings.STATUS_COMPLETED)
+
+    def cancel_booking(self) -> Optional[bookings.Booking]:
+        print("\n--- Cancel Booking ---")
+        return self._change_booking_status(bookings.STATUS_CANCELLED)
+
+    def view_bookings(self) -> None:
+        print("\n--- Booking List ---")
+        entries = self.booking_store.read_all()
+        if not entries:
+            print("   (ยังไม่มี booking)")
+            return
+        rows = []
+        for b in entries:
+            rows.append((str(b.booking_id), str(b.point_id), b.customer_name,
+                         b.booking_date, b.start_time, b.end_time, b.status_text))
+        for line in report_module.render_table(
+                ["Booking", "PtID", "Customer", "Date", "Start", "End", "Status"], rows,
+                max_width=None):
+            print(line)
 
     def menu_report(self) -> None:
         """แสดงเมนูย่อยของการสร้างรายงาน (เมนู 5 ของเมนูหลัก)
@@ -847,6 +978,7 @@ class ChargingStationApp:
         print("  4) View (ดู)")
         print("  5) Generate Report (.txt x3)")
         print("  6) Tools (ข้อมูลตัวอย่าง / ซ่อมดัชนี / ตรวจไฟล์)")
+        print("  7) Booking Management (จัดการการจอง)")
         print("  0) Exit (ออกจากโปรแกรม)")
 
     def run(self) -> int:
@@ -862,7 +994,7 @@ class ChargingStationApp:
             self.show_menu()
             try:
                 choice = validators.ask_menu_choice(
-                    "เลือกเมนู [0-6] : ", (0, 1, 2, 3, 4, 5, 6))
+                    "เลือกเมนู [0-7] : ", (0, 1, 2, 3, 4, 5, 6, 7))
                 if choice == 1:
                     self.add_point()
                 elif choice == 2:
@@ -875,6 +1007,8 @@ class ChargingStationApp:
                     self.menu_report()
                 elif choice == 6:
                     self.menu_tools()
+                elif choice == 7:
+                    self.menu_booking()
                 else:
                     # เลือก 0 = ออกอย่างปลอดภัย (สร้างรายงาน + flush + os.fsync)
                     self._shutdown()
@@ -915,13 +1049,15 @@ class ChargingStationApp:
         except (OSError, ValueError) as exc:
             print(f"   [คำเตือน] สร้างรายงานไม่สำเร็จ: {exc}")
 
-        for path in (self.data_path, self.log_path, self.index_path):
+        for path in (self.data_path, self.log_path, self.index_path, self.booking_path):
             self._fsync_file(path)
 
         print(f"   [ข้อมูล] {models.DATA_FILE_NAME}: {self.store.file_size()} ไบต์ "
               f"| {models.LOG_FILE_NAME}: {os.path.getsize(self.log_path)} ไบต์ "
               f"| {models.INDEX_FILE_NAME}: "
-              f"{os.path.getsize(self.index_path)} ไบต์")
+              f"{os.path.getsize(self.index_path)} ไบต์"
+              f" | {models.BOOKING_FILE_NAME}: "
+              f"{os.path.getsize(self.booking_path)} ไบต์")
         print("   [จบการทำงาน] ขอบคุณครับ/ค่ะ ^_^")
 
     @staticmethod
@@ -996,6 +1132,7 @@ def print_banner(app: ChargingStationApp) -> None:
     print(f"  ข้อมูลปัจจุบัน : {summary_total} record | "
           f"log {app.audit.count()} เหตุการณ์ | "
           f"index {app.point_index.count()} รายการ | "
+          f"booking {app.booking_store.count()} รายการ | "
           f"ช่องว่าง {app.store.free_slot_count()}")
     print("=" * 62)
 
@@ -1010,7 +1147,7 @@ def build_parser() -> argparse.ArgumentParser:
                "  python main.py --seed          สร้างข้อมูลตัวอย่างแล้วเข้าเมนู\n"
                "  python main.py --rebuild-index สร้าง index.dat ใหม่จาก log\n"
                "  python main.py --report-only   สร้างรายงานแล้วออก\n"
-               "  python main.py --spec          แสดงสเปกระเบียนทั้ง 3 ไฟล์",
+               "  python main.py --spec          แสดงสเปกระเบียนทั้งหมด",
     )
     parser.add_argument("--data-dir", default=".",
                         help="โฟลเดอร์เก็บไฟล์ข้อมูล (ค่าเริ่มต้น: โฟลเดอร์ปัจจุบัน)")
@@ -1023,7 +1160,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--report-only", action="store_true",
                         help="สร้างรายงาน .txt จากข้อมูลปัจจุบันแล้วออก")
     parser.add_argument("--spec", action="store_true",
-                        help="แสดงสเปกระเบียนของไฟล์ไบนารีทั้ง 3 ไฟล์แล้วออก")
+                        help="แสดงสเปกระเบียนของไฟล์ไบนารีทั้งหมดแล้วออก")
     parser.add_argument("--align", choices=("smart", "simple"),
                         default="smart",
                         help="วิธีจัดความกว้างตารางใน Terminal: "
@@ -1039,7 +1176,7 @@ def build_parser() -> argparse.ArgumentParser:
 def reset_data_dir(data_dir: str) -> None:
     """ลบไฟล์ข้อมูลและไฟล์รายงานทั้งหมดในโฟลเดอร์ (ใช้กับ --reset)"""
     names = [models.DATA_FILE_NAME, models.LOG_FILE_NAME,
-             models.INDEX_FILE_NAME, models.REPORT_FILE_NAME,
+             models.INDEX_FILE_NAME, models.BOOKING_FILE_NAME, models.REPORT_FILE_NAME,
              models.LOCATION_FILE_NAME]
     names.extend(reports_module.ALL_REPORT_NAMES)
     for name in names:
@@ -1070,7 +1207,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     if args.spec:
         print(models.describe_spec())
         print(f"Total bytes -> {models.RECORD_SIZE}, "
-              f"{models.LOG_RECORD_SIZE}, {models.INDEX_RECORD_SIZE}")
+              f"{models.LOG_RECORD_SIZE}, {models.INDEX_RECORD_SIZE}, {models.BOOKING_RECORD_SIZE}")
         return 0
 
     if args.reset:

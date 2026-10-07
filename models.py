@@ -4,7 +4,7 @@
 ที่คอมไพล์ไว้ล่วงหน้า (pre-compiled) และกำหนด endianness เป็น Little-Endian (``<``)
 ทั้งหมด เพื่อให้ผลลัพธ์เหมือนกันทุกเครื่อง
 
-สเปกทั้ง 3 ไฟล์ (ห้ามเปลี่ยนชื่อฟิลด์ ลำดับ หรือขนาด)
+สเปกทั้งหมด 4 ไฟล์ (ห้ามเปลี่ยนชื่อฟิลด์ ลำดับ หรือขนาด)
 ---------------------------------------------------
 1) charge_points.dat — struct format ``<l10s30s10sfflllll`` ขนาด 82 ไบต์/ระเบียน
    (ในเอกสารโจทย์เขียนไว้ว่า ``<l10s30s10sffl lll l`` ซึ่งมีช่องว่างคั่นไว้
@@ -37,6 +37,9 @@ LOG_FILE_NAME = "charge_points.log"
 INDEX_FILE_NAME = "index.dat"
 REPORT_FILE_NAME = "report.txt"
 LOCATION_FILE_NAME = "locations.txt"   # ชื่อสถานที่ตั้งแบบเต็ม (ข้อความ UTF-8)
+BOOKING_FILE_NAME = "bookings.dat"
+BOOKING_FORMAT = "<ll30s10s5s5sll"
+BOOKING_RECORD_SIZE = struct.calcsize(BOOKING_FORMAT)
 
 # กติกาทางธุรกิจที่ใช้ตรวจสอบอินพุต
 STATION_CODE_PATTERN = "EVS-NNNN"
@@ -310,7 +313,7 @@ def unpack_index_entry(data: bytes) -> IndexEntry:
 
 
 def describe_spec() -> str:
-    """คืนข้อความสรุปสเปกระเบียนทั้ง 3 ไฟล์ (ใช้ใน --help / หน้าจอตอนเริ่มโปรแกรม)"""
+    """คืนข้อความสรุปสเปกระเบียนทั้งหมด 4 ไฟล์ (ใช้ใน --help / หน้าจอตอนเริ่มโปรแกรม)"""
     return "\n".join([
         f"{DATA_FILE_NAME:<20} format={CHARGE_POINT_FORMAT:<20} size={RECORD_SIZE} bytes",
         "   -> point_id(l,4) station_code(10s,10) location(30s,30) plug_type(10s,10)",
@@ -321,6 +324,9 @@ def describe_spec() -> str:
         " is_booked_after(l,4) price_after_thb(f,4)",
         f"{INDEX_FILE_NAME:<20} format={INDEX_FORMAT:<20} size={INDEX_RECORD_SIZE} bytes",
         "   -> point_id(l,4) log_seq(l,4)",
+        f"{BOOKING_FILE_NAME:<20} format={BOOKING_FORMAT:<20} size={BOOKING_RECORD_SIZE} bytes",
+        "   -> booking_id(l,4) point_id(l,4) customer_name(30s) booking_date(10s)",
+        "      start_time(5s) end_time(5s) status(l,4) created_at(l,4)",
     ])
 
 
@@ -343,7 +349,7 @@ def record_to_dict(point: ChargePoint) -> Dict[str, object]:
 
 __all__ = [
     "APP_VERSION", "BYTE_ORDER", "BYTE_ORDER_LABEL", "ENCODING_LABEL",
-    "DATA_FILE_NAME", "LOG_FILE_NAME", "INDEX_FILE_NAME", "REPORT_FILE_NAME",
+    "DATA_FILE_NAME", "LOG_FILE_NAME", "INDEX_FILE_NAME", "BOOKING_FILE_NAME", "REPORT_FILE_NAME",
     "STATION_CODE_PATTERN", "PLUG_TYPES", "LOCATION_MAX_BYTES",
     "OP_ADD", "OP_UPDATE", "OP_DELETE", "OP_VIEW", "OPERATION_NAMES",
     "CHARGE_POINT_FORMAT", "CHARGE_POINT_STRUCT", "RECORD_SIZE",
@@ -369,6 +375,7 @@ def verify_record_sizes() -> None:
         DATA_FILE_NAME: (RECORD_SIZE, 82),
         LOG_FILE_NAME: (LOG_RECORD_SIZE, 24),
         INDEX_FILE_NAME: (INDEX_RECORD_SIZE, 8),
+        BOOKING_FILE_NAME: (BOOKING_RECORD_SIZE, 66),
     }
     for file_name, (actual, spec) in expected.items():
         if actual != spec:
