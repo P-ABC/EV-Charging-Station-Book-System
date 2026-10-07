@@ -479,8 +479,39 @@ class ChargingStationApp:
               f"(ช่องว่างที่นำกลับมาใช้ได้: {len(self.store.free_slots)})")
         return True
 
+    def menu_booking(self) -> None:
+        """เมนูจัดการการจอง"""
+
+        while True:
+            print("\n=== Booking Management ===")
+            print("   1) Add Booking")
+            print("   2) Update Booking Status")
+            print("   3) Cancel Booking")
+            print("   4) View Bookings")
+            print("   0) Back")
+
+            choice = validators.ask_menu_choice(
+                "   เลือก [0-4] : ",
+                (0, 1, 2, 3, 4)
+            )
+
+            if choice == 0:
+                return
+
+            if choice == 1:
+                self.add_booking()
+
+            elif choice == 2:
+                self.update_booking_status()
+
+            elif choice == 3:
+                self.cancel_booking()
+
+            elif choice == 4:
+                self.view_bookings()
+
     # ------------------------------------------------------------------
-    # เมนู 4.1) View รายการเดียว + ประวัติล่าสุดผ่าน index.dat
+    # เมนู 5.1) View รายการเดียว + ประวัติล่าสุดผ่าน index.dat
     # ------------------------------------------------------------------
     def view_single(self) -> None:
         """ดูหัวชาร์จ 1 หัวตาม point_id พร้อมแสดงประวัติล่าสุด
@@ -521,12 +552,12 @@ class ChargingStationApp:
             print(f"   {line}")
 
     # ------------------------------------------------------------------
-    # เมนู 4.2) View ทั้งหมด
+    # เมนู 5.2) View ทั้งหมด
     # ------------------------------------------------------------------
     def view_all(self) -> None:
         """ดูหัวชาร์จทั้งหมด (ขอรวม record ที่ถูก soft delete ด้วย)
 
-        ตามข้อกำหนด: 4.2 เป็นเมนูที่ "รวมที่ลบแล้ว" จึงแสดง record ทั้งหมด
+        ตามข้อกำหนด: 5.2 เป็นเมนูที่ "รวมที่ลบแล้ว" จึงแสดง record ทั้งหมด
         คอลัมน์ Status จะแสดง Deleted สำหรับ record ที่ถูกลบ
         """
         print("\n--- View All Charge Points (including deleted) ---")
@@ -557,7 +588,7 @@ class ChargingStationApp:
               f"(data file: {self.store.count_records()} records)")
 
     # ------------------------------------------------------------------
-    # เมนู 4.3) View แบบกรอง
+    # เมนู 5.3) View แบบกรอง
     # ------------------------------------------------------------------
     def view_filtered(self) -> None:
         """ดูหัวชาร์จแบบกรองตาม station_code / plug_type / status / is_booked
@@ -617,7 +648,7 @@ class ChargingStationApp:
             print(line)
 
     # ------------------------------------------------------------------
-    # เมนู 4.4) สถิติโดยสรุป
+    # เมนู 5.4) สถิติโดยสรุป
     # ------------------------------------------------------------------
     def view_statistics(self) -> None:
         """แสดงสถิติโดยสรุปของระบบ (นับเฉพาะสถานะ Active ตามสเปกรายงาน)"""
@@ -641,7 +672,7 @@ class ChargingStationApp:
               f"| Index entries: {self.point_index.count()}")
 
     # ------------------------------------------------------------------
-    # เมนู 4) View (ตัวเลือกเมนูย่อย)
+    # เมนู 5) View (ตัวเลือกเมนูย่อย)
     # ------------------------------------------------------------------
     def menu_view(self) -> None:
         """แสดงเมนูย่อยของ View (4.1 / 4.2 / 4.3 / 4.4)"""
@@ -661,7 +692,7 @@ class ChargingStationApp:
             self.view_statistics()
 
     # ------------------------------------------------------------------
-    # เมนู 5) Generate Report
+    # เมนู 6) Generate Report
     # ------------------------------------------------------------------
     def generate_report(self, silent: bool = False) -> Dict[str, str]:
         """สร้างรายงานทั้ง 3 ชุดเป็นไฟล์ .txt แยกกัน จากข้อมูลปัจจุบัน
@@ -723,12 +754,12 @@ class ChargingStationApp:
                       f"ส่วนที่ 2 ตาราง: {'มี' if has_table else 'ไม่มี'} | "
                       f"ส่วนที่ 3 ส่วนสรุป: {'มี' if has_summary else 'ไม่มี'}")
         if not found:
-            print("   (ยังไม่มีไฟล์รายงาน — เลือกเมนู 5 เพื่อสร้าง)")
+            print("   (ยังไม่มีไฟล์รายงาน — เลือกเมนู 6 เพื่อสร้าง)")
 
     def menu_tools(self) -> None:
-        """แสดงเมนูเครื่องมือ (เมนู 6) — รวมงานที่ต้องทำผ่านเมนูเดียวกัน
+        """แสดงเมนูเครื่องมือ (เมนู 7) — รวมงานที่ต้องทำผ่านเมนูเดียวกัน
 
-        เกณฑ์ข้อ 5: การโหลดข้อมูลตัวอย่างและการซ่อมแซมดัชนีต้องทำได้จาก
+        เกณฑ์ข้อ 7: การโหลดข้อมูลตัวอย่างและการซ่อมแซมดัชนีต้องทำได้จาก
         เมนูนี้ ไม่ต้องรันโปรแกรมแยกอีก
         """
         print("\n=== Tools Menu ===")
@@ -748,7 +779,7 @@ class ChargingStationApp:
             self.store.refresh_free_slots()
             self.app_reload()
             print(f"   [สำเร็จ] โหลดข้อมูลตัวอย่าง {result['records']} record")
-            print("           เลือกเมนู 5 เพื่อสร้างรายงานจากข้อมูลชุดนี้")
+            print("           เลือกเมนู 6 เพื่อสร้างรายงานจากข้อมูลชุดนี้")
         elif choice == 2:
             rebuilt = seed_data.rebuild_index(self.log_path, self.index_path)
             self.point_index.load()
@@ -948,9 +979,9 @@ class ChargingStationApp:
             print(line)
 
     def menu_report(self) -> None:
-        """แสดงเมนูย่อยของการสร้างรายงาน (เมนู 5 ของเมนูหลัก)
+        """แสดงเมนูย่อยของการสร้างรายงาน (เมนู 6 ของเมนูหลัก)
 
-        เกณฑ์ข้อ 5: ทุกงานรวมถึงการดูรายงานต้องทำผ่านเมนูชุดเดียวกัน
+        เกณฑ์ข้อ 6: ทุกงานรวมถึงการดูรายงานต้องทำผ่านเมนูชุดเดียวกัน
         โดยไม่ต้องรันโปรแกรมแยกอีก
         """
         print("\n=== Generate Report Menu ===")
@@ -967,10 +998,11 @@ class ChargingStationApp:
     # ------------------------------------------------------------------
     @staticmethod
     def show_menu() -> None:
-        """แสดงเมนูหลักของโปรแกรม"""
         print("\n" + "=" * 62)
-        print("  EV Charging Station Booking System  (v"
-              f"{models.APP_VERSION})")
+        print(
+            "  EV Charging Station Booking System  (v"
+            f"{models.APP_VERSION})"
+        )
         print("=" * 62)
         print("  1) Add (เพิ่ม)")
         print("  2) Update (แก้ไข)")
@@ -1002,10 +1034,12 @@ class ChargingStationApp:
                 elif choice == 3:
                     self.delete_point()
                 elif choice == 4:
-                    self.menu_view()
+                    self.menu_booking()
                 elif choice == 5:
-                    self.menu_report()
+                    self.menu_view()
                 elif choice == 6:
+                    self.menu_report()
+                elif choice == 7:
                     self.menu_tools()
                 elif choice == 7:
                     self.menu_booking()
