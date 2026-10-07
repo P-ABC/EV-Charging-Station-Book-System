@@ -1,4 +1,4 @@
-Generated At : 2026-10-07 20:30:49 (+07:00)
+Generated At : 2026-10-07 21:12:14 (+07:00)
 App Version  : 1.0
 Endianness   : Little-Endian
 Encoding     : UTF-8 (fixed-length) (ไฟล์รายงานใช้ UTF-8)
@@ -9,11 +9,11 @@ Data Dir     : .
 +------------------------------+-----------+------+--------+--------+-------+----------------+
 | Timestamp                    | Operation | PtID | Status | Booked | Price | Index check    |
 +------------------------------+-----------+------+--------+--------+-------+----------------+
-| 2026-10-07 20:29:57 (+07:00) | VIEW      | 1010 | Active | No     | 7.50  | Found in index |
-| 2026-10-07 20:28:19 (+07:00) | ADD       | 1010 | Active | No     | 7.50  | Found in index |
-| 2026-10-07 19:52:48 (+07:00) | UPDATE    | 1007 | Active | Yes    | 8.00  | Found in index |
-| 2026-10-07 19:51:51 (+07:00) | VIEW      | 1001 | Active | No     | 6.00  | Found in index |
-| 2026-10-07 15:30:21 (+07:00) | VIEW      | 1007 | Active | Yes    | 8.00  | Found in index |
+| 2026-10-07 21:11:19 (+07:00) | UPDATE    | 2024 | Active | No     | 6.00  | Found in index |
+| 2026-10-07 21:03:30 (+07:00) | VIEW      | 1001 | Active | Yes    | 6.00  | Found in index |
+| 2026-10-07 21:03:02 (+07:00) | UPDATE    | 2036 | Active | Yes    | 7.00  | Found in index |
+| 2026-10-07 21:02:09 (+07:00) | UPDATE    | 2045 | Active | Yes    | 6.50  | Found in index |
+| 2026-10-07 21:00:53 (+07:00) | UPDATE    | 2011 | Active | Yes    | 3.50  | Found in index |
 +------------------------------+-----------+------+--------+--------+-------+----------------+
 
 [SUMMARY] Summary
@@ -22,10 +22,10 @@ Data Dir     : .
 | Item                         | Value                                           |
 +------------------------------+-------------------------------------------------+
 | Records displayed in Table 1 | 5                                               |
-| ADD operations               | 1                                               |
-| UPDATE operations            | 1                                               |
+| ADD operations               | 0                                               |
+| UPDATE operations            | 4                                               |
 | DELETE operations            | 0                                               |
-| VIEW operations              | 3                                               |
+| VIEW operations              | 1                                               |
 | Found in index.dat           | 5                                               |
 | Missing from index.dat       | 0                                               |
 | Source files                 | charge_points.log, charge_points.dat, index.dat |
@@ -37,7 +37,7 @@ Data Dir     : .
 | Check                                           | Expected          | Result |
 +-------------------------------------------------+-------------------+--------+
 | Displayed rows = recent log records             | 5 = 5             | PASS   |
-| Operation counts = displayed rows               | 1 + 1 + 0 + 3 = 5 | PASS   |
+| Operation counts = displayed rows               | 0 + 4 + 0 + 1 = 5 | PASS   |
 | Index found + missing = displayed rows          | 5 + 0 = 5         | PASS   |
 | All displayed log records have valid point data | 5 = 5             | PASS   |
 +-------------------------------------------------+-------------------+--------+

@@ -1,4 +1,4 @@
-Generated At : 2026-10-07 20:30:49 (+07:00)
+Generated At : 2026-10-07 21:12:14 (+07:00)
 App Version  : 1.0
 Endianness   : Little-Endian
 Encoding     : UTF-8 (fixed-length) (ไฟล์รายงานใช้ UTF-8)
@@ -6,11 +6,20 @@ Data Dir     : .
 
 [TABLE 1] Booking and reservation details
 --------------------------------------------------------------
-+---------+------+----------+------------+-------+-------+-----------+----------+-----------------------+
-| Booking | PtID | Customer | Date       | Start | End   | Status    | Station  | Location              |
-+---------+------+----------+------------+-------+-------+-----------+----------+-----------------------+
-| 1       | 1007 | Paul     | 2026-10-07 | 20:00 | 22:00 | Confirmed | EVS-0007 | Lat Phrao, Thairath 2 |
-+---------+------+----------+------------+-------+-------+-----------+----------+-----------------------+
++-----------+------+------------+------------+-------+-------+-----------+----------+---------------------------------------------------------------+
+| BookingID | PtID | Customer   | Date       | Start | End   | Status    | Station  | Location                                                      |
++-----------+------+------------+------------+-------+-------+-----------+----------+---------------------------------------------------------------+
+| 1         | 1007 | Paul       | 2026-10-07 | 20:00 | 22:00 | Cancelled | EVS-0007 | Lat Phrao, Thairath 2                                         |
+| 2         | 1021 | Leen Mak   | 2026-10-7  | 20:50 | 22:50 | Confirmed | EVS-0021 | Lotus Banpong                                                 |
+| 3         | 2024 | Slope Wow  | 2026-10-07 | 13:00 | 15:00 | Completed | EVS-0024 | CentralWorld, Parking P2                                      |
+| 4         | 2025 | Pol Yhai   | 2026-10-08 | 08:00 | 10:00 | Confirmed | EVS-0025 | ICONSIAM, Level G                                             |
+| 5         | 1001 | Mak Lon    | 2026-10-08 | 02:00 | 04:00 | Confirmed | EVS-0001 | Siam Paragon, Level B1                                        |
+| 6         | 2040 | Logan Paul | 2026-10-07 | 22:20 | 23:40 | Confirmed | EVS-0015 | Lat Phrao, Thairath 2                                         |
+| 7         | 2016 | Cal Look   | 2026-10-08 | 12:00 | 14:00 | Confirmed | EVS-0016 | Central Rama 9                                                |
+| 8         | 2011 | Reet Slow  | 2026-10-08 | 10:00 | 13:00 | Confirmed | EVS-0011 | Siam Paragon EV Station, New Basement Project and Parking Lot |
+| 9         | 2045 | Lick San   | 2026-10-08 | 13:00 | 15:30 | Confirmed | EVS-0020 | Siam Paragon, Level B1                                        |
+| 10        | 2036 | Paus Long  | 2026-10-08 | 11:00 | 12:40 | Confirmed | EVS-0011 | ICONSIAM, Level G                                             |
++-----------+------+------------+------------+-------+-------+-----------+----------+---------------------------------------------------------------+
 
 
 [SUMMARY] Summary
@@ -18,14 +27,14 @@ Data Dir     : .
 +----------------------------------+-----------------------------------------------------------+
 | Item                             | Value                                                     |
 +----------------------------------+-----------------------------------------------------------+
-| Records in bookings.dat          | 1 records                                                 |
-| Confirmed bookings               | 1                                                         |
-| Completed bookings               | 0                                                         |
-| Cancelled bookings               | 0                                                         |
-| Currently booked charging points | 15                                                        |
-| Records in charge_points.dat     | 55 records                                                |
-| Records in index.dat             | 56 records                                                |
-| Events in charge_points.log      | 73 records                                                |
+| Records in bookings.dat          | 10 records                                                |
+| Confirmed bookings               | 8                                                         |
+| Completed bookings               | 1                                                         |
+| Cancelled bookings               | 1                                                         |
+| Currently booked charging points | 8                                                         |
+| Records in charge_points.dat     | 56 records                                                |
+| Records in index.dat             | 58 records                                                |
+| Events in charge_points.log      | 104 records                                               |
 | Booking file validation          | PASS                                                      |
 | Source files                     | bookings.dat, charge_points.dat, charge_points.log, in... |
 +----------------------------------+-----------------------------------------------------------+
@@ -37,6 +46,6 @@ Data Dir     : .
 +----------------------------------------------------------+-----------------------+--------+
 | Booking binary record size                               | 66 bytes              | PASS   |
 | Every non-cancelled booking references an existing point | No invalid references | PASS   |
-| Confirmed bookings are represented by booking records    | 1                     | PASS   |
+| Confirmed bookings are represented by booking records    | 8                     | PASS   |
 | Point data available for booking report                  | Loaded                | PASS   |
 +----------------------------------------------------------+-----------------------+--------+

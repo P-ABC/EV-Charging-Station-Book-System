@@ -8,6 +8,8 @@
 1008	เอเชีย เซนเทอร์ ชั้น G
 1009	เซ็นทรัล พหมโพธิยา
 1010	Robinson Ratchaburi
+1019	Robinson Prachinburi
+1021	Lotus Banpong
 1057	Park
 2001	สยามพารากอน ชั้น B1
 2002	เซ็นทรัลเวิลด์ ลาน P2

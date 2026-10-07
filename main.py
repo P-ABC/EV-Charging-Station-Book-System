@@ -614,7 +614,7 @@ class ChargingStationApp:
             self.generate_report()
         else:
             self.show_report_files()
-            
+
     def menu_booking(self) -> None:
         """เมนูจัดการการจอง"""
 
@@ -638,7 +638,18 @@ class ChargingStationApp:
                 self.add_booking()
 
             elif choice == 2:
-                self.update_booking_status()
+                print("\n--- Update Booking Status ---")
+                print("   1) Completed")
+                print("   2) Cancelled")
+
+                status_choice = validators.ask_menu_choice(
+                    "   เลือก [1-2] : ", (1, 2)
+                )
+
+                if status_choice == 1:
+                    self.complete_booking()
+                else:
+                    self.cancel_booking()
 
             elif choice == 3:
                 self.cancel_booking()

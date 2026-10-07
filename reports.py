@@ -561,7 +561,7 @@ def build_report_booking(data_dir: str,
         
     if rows:
         lines.extend(render_table(
-            ["Booking", "PtID", "Customer", "Date", "Start", "End",
+            ["BookingID", "PtID", "Customer", "Date", "Start", "End",
              "Status", "Station", "Location"], rows,
             max_width=MAIN_TABLE_MAX_WIDTH))
     else:

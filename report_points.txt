@@ -1,4 +1,4 @@
-Generated At : 2026-10-07 20:30:49 (+07:00)
+Generated At : 2026-10-07 21:12:14 (+07:00)
 App Version  : 1.0
 Endianness   : Little-Endian
 Encoding     : UTF-8 (fixed-length) (ไฟล์รายงานใช้ UTF-8)
@@ -9,61 +9,62 @@ Data Dir     : .
 +------+----------+----------------------------------+---------+-------+-------+----------+--------+---------------------+
 | PtID | Station  | Location                         | Plug    | Power | Price | Status   | Booked | Updated             |
 +------+----------+----------------------------------+---------+-------+-------+----------+--------+---------------------+
-| 1001 | EVS-0001 | Siam Paragon, Level B1           | Type2   | 7.4   | 6.00  | Active   | No     | 2026-10-07 15:25:04 |
-| 1002 | EVS-0002 | CentralWorld, Parking P2         | CCS2    | 150.0 | 6.25  | Active   | Yes    | 2026-09-10 07:27:40 |
-| 1003 | EVS-0003 | ICONSIAM, Level G                | CCS2    | 120.0 | 6.75  | Active   | Yes    | 2026-09-10 07:28:40 |
-| 1004 | EVS-0004 | Mega Bangna, Zone A              | CHAdeMO | 50.0  | 7.00  | Active   | Yes    | 2026-09-10 07:29:40 |
+| 1001 | EVS-0001 | Siam Paragon, Level B1           | Type2   | 7.4   | 6.00  | Active   | Yes    | 2026-10-07 20:55:27 |
+| 1002 | EVS-0002 | CentralWorld, Parking P2         | CCS2    | 150.0 | 6.25  | Active   | No     | 2026-10-07 20:56:21 |
+| 1003 | EVS-0003 | ICONSIAM, Level G                | CCS2    | 120.0 | 6.75  | Active   | No     | 2026-10-07 20:56:28 |
+| 1004 | EVS-0004 | Mega Bangna, Zone A              | CHAdeMO | 50.0  | 7.00  | Active   | No     | 2026-10-07 20:56:36 |
 | 1005 | EVS-0005 | Central Rama 9                   | Type2   | 22.0  | 7.25  | Active   | No     | 2026-10-07 15:30:00 |
 | 1006 | EVS-0006 | Biking Sathorn, Level 2          | CHAdeMO | 60.0  | 7.50  | Active   | No     | 2026-09-10 07:31:40 |
-| 1007 | EVS-0007 | Lat Phrao, Thairath 2            | GB-T    | 60.0  | 8.00  | Active   | Yes    | 2026-10-07 19:52:48 |
+| 1007 | EVS-0007 | Lat Phrao, Thairath 2            | GB-T    | 60.0  | 8.00  | Active   | No     | 2026-10-07 20:51:37 |
 | 1008 | EVS-0008 | Asia Center, Level G             | CCS2    | 180.0 | 8.50  | Active   | No     | 2026-09-10 07:33:40 |
 | 1009 | EVS-0009 | Central Phom Phothiya            | Type2   | 11.0  | 9.00  | Active   | No     | 2026-09-10 07:34:40 |
 | 1010 | EVS-0010 | Robinson Ratchaburi              | CCS2    | 60.0  | 7.50  | Active   | No     | 2026-10-07 20:28:19 |
 | 2001 | EVS-0001 | Siam Paragon, Level B1           | Type2   | 3.7   | 3.50  | Active   | No     | 2026-09-10 07:36:40 |
-| 2002 | EVS-0002 | CentralWorld, Parking P2         | CCS2    | 7.4   | 4.25  | Active   | Yes    | 2026-09-10 07:37:40 |
+| 2002 | EVS-0002 | CentralWorld, Parking P2         | CCS2    | 7.4   | 4.25  | Active   | No     | 2026-10-07 20:56:51 |
 | 2003 | EVS-0003 | ICONSIAM, Level G                | CHAdeMO | 11.0  | 5.00  | Active   | No     | 2026-09-10 07:38:40 |
 | 2004 | EVS-0004 | Mega Bangna, Zone A              | GB-T    | 22.0  | 6.00  | Active   | No     | 2026-09-10 07:39:40 |
 | 2005 | EVS-0005 | Central Rama 9                   | Type2   | 50.0  | 6.50  | Active   | No     | 2026-09-10 07:40:40 |
-| 2006 | EVS-0006 | Biking Sathorn, Level 2          | CCS2    | 60.0  | 7.00  | Active   | Yes    | 2026-09-10 07:41:40 |
+| 2006 | EVS-0006 | Biking Sathorn, Level 2          | CCS2    | 60.0  | 7.00  | Active   | No     | 2026-10-07 20:57:00 |
 | 2007 | EVS-0007 | Lat Phrao, Thairath 2            | CHAdeMO | 120.0 | 7.50  | Active   | No     | 2026-09-10 07:42:40 |
 | 2008 | EVS-0008 | Asia Center, Level G             | GB-T    | 150.0 | 8.00  | Active   | No     | 2026-09-10 07:43:40 |
 | 2009 | EVS-0009 | Central Phom Phothiya            | Type2   | 180.0 | 9.50  | Active   | No     | 2026-09-10 07:44:40 |
-| 2010 | EVS-0010 | Paragon, Former Project          | CCS2    | 350.0 | 15.50 | Active   | Yes    | 2026-09-10 07:45:40 |
-| 2011 | EVS-0011 | Siam Paragon EV Station, New ... | CHAdeMO | 3.7   | 3.50  | Active   | No     | 2026-09-10 07:46:40 |
+| 2010 | EVS-0010 | Paragon, Former Project          | CCS2    | 350.0 | 15.50 | Active   | No     | 2026-10-07 20:57:17 |
+| 2011 | EVS-0011 | Siam Paragon EV Station, New ... | CHAdeMO | 3.7   | 3.50  | Active   | Yes    | 2026-10-07 21:00:53 |
 | 2012 | EVS-0012 | Siam Paragon, Level B1           | GB-T    | 7.4   | 4.25  | Active   | No     | 2026-09-10 07:47:40 |
 | 2013 | EVS-0013 | CentralWorld, Parking P2         | Type2   | 11.0  | 5.00  | Inactive | No     | 2026-09-10 07:48:40 |
-| 2014 | EVS-0014 | ICONSIAM, Level G                | CCS2    | 22.0  | 6.00  | Active   | Yes    | 2026-09-10 07:49:40 |
+| 2014 | EVS-0014 | ICONSIAM, Level G                | CCS2    | 22.0  | 6.00  | Active   | No     | 2026-10-07 20:57:31 |
 | 2015 | EVS-0015 | Mega Bangna, Zone A              | CHAdeMO | 50.0  | 6.50  | Active   | No     | 2026-09-10 07:50:40 |
-| 2016 | EVS-0016 | Central Rama 9                   | GB-T    | 60.0  | 7.00  | Active   | No     | 2026-09-10 07:51:40 |
-| 2017 | EVS-0017 | Biking Sathorn, Level 2          | Type2   | 120.0 | 7.50  | Deleted  | No     | 2026-09-10 07:52:40 |
-| 2018 | EVS-0018 | Lat Phrao, Thairath 2            | CCS2    | 150.0 | 8.00  | Active   | Yes    | 2026-09-10 07:53:40 |
+| 2016 | EVS-0016 | Central Rama 9                   | GB-T    | 60.0  | 7.00  | Active   | Yes    | 2026-10-07 21:00:18 |
+| 1021 | EVS-0021 | Lotus Banpong                    | Type2   | 60.0  | 7.50  | Active   | Yes    | 2026-10-07 20:48:53 |
+| 2018 | EVS-0018 | Lat Phrao, Thairath 2            | CCS2    | 150.0 | 8.00  | Active   | No     | 2026-10-07 20:57:44 |
 | 2019 | EVS-0019 | Asia Center, Level G             | CHAdeMO | 180.0 | 9.50  | Active   | No     | 2026-09-10 07:54:40 |
 | 2020 | EVS-0020 | Central Phom Phothiya            | GB-T    | 350.0 | 15.50 | Active   | No     | 2026-09-10 07:55:40 |
 | 2021 | EVS-0021 | Paragon, Former Project          | Type2   | 3.7   | 3.50  | Active   | No     | 2026-09-10 07:56:40 |
-| 2022 | EVS-0022 | Siam Paragon EV Station, New ... | CCS2    | 7.4   | 4.25  | Active   | Yes    | 2026-09-10 07:57:40 |
+| 2022 | EVS-0022 | Siam Paragon EV Station, New ... | CCS2    | 7.4   | 4.25  | Active   | No     | 2026-10-07 20:57:52 |
 | 2023 | EVS-0023 | Siam Paragon, Level B1           | CHAdeMO | 11.0  | 5.00  | Active   | No     | 2026-09-10 07:58:40 |
-| 2024 | EVS-0024 | CentralWorld, Parking P2         | GB-T    | 22.0  | 6.00  | Active   | No     | 2026-09-10 07:59:40 |
-| 2025 | EVS-0025 | ICONSIAM, Level G                | Type2   | 50.0  | 6.50  | Active   | No     | 2026-09-10 08:00:40 |
-| 2026 | EVS-0001 | Mega Bangna, Zone A              | CCS2    | 60.0  | 7.00  | Inactive | Yes    | 2026-09-10 08:01:40 |
+| 2024 | EVS-0024 | CentralWorld, Parking P2         | GB-T    | 22.0  | 6.00  | Active   | No     | 2026-10-07 21:11:19 |
+| 2025 | EVS-0025 | ICONSIAM, Level G                | Type2   | 50.0  | 6.50  | Active   | Yes    | 2026-10-07 20:50:10 |
+| 2026 | EVS-0001 | Mega Bangna, Zone A              | CCS2    | 60.0  | 7.00  | Inactive | No     | 2026-10-07 20:58:04 |
 | 2027 | EVS-0002 | Central Rama 9                   | CHAdeMO | 120.0 | 7.50  | Active   | No     | 2026-09-10 08:02:40 |
 | 2028 | EVS-0003 | Biking Sathorn, Level 2          | GB-T    | 150.0 | 8.00  | Active   | No     | 2026-09-10 08:03:40 |
 | 2029 | EVS-0004 | Lat Phrao, Thairath 2            | Type2   | 180.0 | 9.50  | Active   | No     | 2026-09-10 08:04:40 |
-| 2030 | EVS-0005 | Asia Center, Level G             | CCS2    | 350.0 | 15.50 | Active   | Yes    | 2026-09-10 08:05:40 |
+| 2030 | EVS-0005 | Asia Center, Level G             | CCS2    | 350.0 | 15.50 | Active   | No     | 2026-10-07 20:58:14 |
 | 2031 | EVS-0006 | Central Phom Phothiya            | CHAdeMO | 3.7   | 3.50  | Active   | No     | 2026-09-10 08:06:40 |
 | 2032 | EVS-0007 | Paragon, Former Project          | GB-T    | 7.4   | 4.25  | Active   | No     | 2026-09-10 08:07:40 |
 | 2033 | EVS-0008 | Siam Paragon EV Station, New ... | Type2   | 11.0  | 5.00  | Active   | No     | 2026-09-10 08:08:40 |
-| 2034 | EVS-0009 | Siam Paragon, Level B1           | CCS2    | 22.0  | 6.00  | Active   | Yes    | 2026-09-10 08:09:40 |
+| 2034 | EVS-0009 | Siam Paragon, Level B1           | CCS2    | 22.0  | 6.00  | Active   | No     | 2026-10-07 20:58:27 |
 | 2035 | EVS-0010 | CentralWorld, Parking P2         | CHAdeMO | 50.0  | 6.50  | Active   | No     | 2026-09-10 08:10:40 |
-| 2036 | EVS-0011 | ICONSIAM, Level G                | GB-T    | 60.0  | 7.00  | Active   | No     | 2026-09-10 08:11:40 |
+| 2036 | EVS-0011 | ICONSIAM, Level G                | GB-T    | 60.0  | 7.00  | Active   | Yes    | 2026-10-07 21:03:02 |
 | 2037 | EVS-0012 | Mega Bangna, Zone A              | Type2   | 120.0 | 7.50  | Active   | No     | 2026-09-10 08:12:40 |
-| 2038 | EVS-0013 | Central Rama 9                   | CCS2    | 150.0 | 8.00  | Active   | Yes    | 2026-09-10 08:13:40 |
+| 2038 | EVS-0013 | Central Rama 9                   | CCS2    | 150.0 | 8.00  | Active   | No     | 2026-10-07 20:58:31 |
 | 2039 | EVS-0014 | Biking Sathorn, Level 2          | CHAdeMO | 180.0 | 9.50  | Inactive | No     | 2026-09-10 08:14:40 |
-| 2040 | EVS-0015 | Lat Phrao, Thairath 2            | GB-T    | 350.0 | 15.50 | Active   | No     | 2026-09-10 08:15:40 |
+| 2040 | EVS-0015 | Lat Phrao, Thairath 2            | GB-T    | 350.0 | 15.50 | Active   | Yes    | 2026-10-07 20:59:38 |
 | 2041 | EVS-0016 | Asia Center, Level G             | Type2   | 3.7   | 3.50  | Active   | No     | 2026-09-10 08:16:40 |
-| 2042 | EVS-0017 | Central Phom Phothiya            | CCS2    | 7.4   | 4.25  | Active   | Yes    | 2026-09-10 08:17:40 |
+| 2042 | EVS-0017 | Central Phom Phothiya            | CCS2    | 7.4   | 4.25  | Active   | No     | 2026-10-07 20:58:37 |
 | 2043 | EVS-0018 | Paragon, Former Project          | CHAdeMO | 11.0  | 5.00  | Active   | No     | 2026-09-10 08:18:40 |
 | 2044 | EVS-0019 | Siam Paragon EV Station, New ... | GB-T    | 22.0  | 6.00  | Active   | No     | 2026-09-10 08:19:40 |
-| 2045 | EVS-0020 | Siam Paragon, Level B1           | Type2   | 50.0  | 6.50  | Active   | No     | 2026-09-10 08:20:40 |
+| 2045 | EVS-0020 | Siam Paragon, Level B1           | Type2   | 50.0  | 6.50  | Active   | Yes    | 2026-10-07 21:02:09 |
+| 1019 | EVS-0019 | Robinson Prachinburi             | GB-T    | 60.0  | 7.50  | Active   | No     | 2026-10-07 20:38:39 |
 +------+----------+----------------------------------+---------+-------+-------+----------+--------+---------------------+
 
 [LOCATION DETAILS] Full location names
@@ -77,15 +78,15 @@ Data Dir     : .
 +-------------------------------------+-------------------------------------------------+
 | Item                                | Value                                           |
 +-------------------------------------+-------------------------------------------------+
-| Total Points (records)              | 55                                              |
-| Active Points                       | 51                                              |
+| Total Points (records)              | 56                                              |
+| Active Points                       | 53                                              |
 | Inactive Points (maintenance)       | 3                                               |
-| Deleted Points (soft delete)        | 1                                               |
-| Currently Booked (all statuses)     | 15                                              |
-| Booked Active Points                | 14                                              |
-| Available Now (Active & not booked) | 37                                              |
-| Free Slots (reuseable)              | 1                                               |
-| Records in index.dat                | 56 records                                      |
+| Deleted Points (soft delete)        | 0                                               |
+| Currently Booked (all statuses)     | 8                                               |
+| Booked Active Points                | 8                                               |
+| Available Now (Active & not booked) | 45                                              |
+| Free Slots (reuseable)              | 0                                               |
+| Records in index.dat                | 58 records                                      |
 | Source files                        | charge_points.dat, charge_points.log, index.dat |
 +-------------------------------------+-------------------------------------------------+
 
@@ -94,11 +95,11 @@ Data Dir     : .
 +-----------------------------------------------+-----------------+--------+
 | Check                                         | Expected        | Result |
 +-----------------------------------------------+-----------------+--------+
-| Table record count = Total Points             | 55 = 55         | PASS   |
-| Active + Inactive + Deleted = Total           | 51 + 3 + 1 = 55 | PASS   |
-| Booked Active + Available = Active            | 14 + 37 = 51    | PASS   |
-| Free Slots = soft-deleted record count        | 1 = 1           | PASS   |
-| Every active point_id has an index.dat record | 54 records      | PASS   |
-| index.dat record count >= active point count  | 56 >= 54        | PASS   |
+| Table record count = Total Points             | 56 = 56         | PASS   |
+| Active + Inactive + Deleted = Total           | 53 + 3 + 0 = 56 | PASS   |
+| Booked Active + Available = Active            | 8 + 45 = 53     | PASS   |
+| Free Slots = soft-deleted record count        | 0 = 0           | PASS   |
+| Every active point_id has an index.dat record | 56 records      | PASS   |
+| index.dat record count >= active point count  | 58 >= 56        | PASS   |
 | (Info) Deleted or reused index.dat records    | 2 records       | INFO   |
 +-----------------------------------------------+-----------------+--------+
