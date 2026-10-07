@@ -1,0 +1,86 @@
+Generated At : 2026-10-07 16:38:31 (+07:00)
+App Version  : 1.0
+Endianness   : Little-Endian
+Encoding     : UTF-8 (fixed-length) (ไฟล์รายงานใช้ UTF-8)
+Data Dir     : .
+
+[REPORT] Charging Point Availability & System Status
+--------------------------------------------------------------
+This report shows the current availability and status of charging points.
+Deleted charging points are excluded from the availability table.
+
+[TABLE 1] Current Charging Point Status
+------------------------------------------------------------------------------------------------------------------------------------
++------+----------+---------------------------------------------------------------+---------+-------+-------+----------+-----------+
+| PtID | Station  | Location                                                      | Plug    | Power | Price | Status   | Booking   |
++------+----------+---------------------------------------------------------------+---------+-------+-------+----------+-----------+
+| 1001 | EVS-0001 | Siam Paragon, Level B1                                        | Type2   | 7.4   | 6.00  | Active   | Available |
+| 1002 | EVS-0002 | CentralWorld, Parking P2                                      | CCS2    | 150.0 | 6.25  | Active   | Booked    |
+| 1003 | EVS-0003 | ICONSIAM, Level G                                             | CCS2    | 120.0 | 6.75  | Active   | Booked    |
+| 1004 | EVS-0004 | Mega Bangna, Zone A                                           | CHAdeMO | 50.0  | 7.00  | Active   | Booked    |
+| 1005 | EVS-0005 | Central Rama 9                                                | Type2   | 22.0  | 7.25  | Active   | Available |
+| 1006 | EVS-0006 | Biking Sathorn, Level 2                                       | CHAdeMO | 60.0  | 7.50  | Active   | Available |
+| 1007 | EVS-0007 | Lat Phrao, Thairath 2                                         | GB-T    | 60.0  | 8.00  | Active   | Available |
+| 1008 | EVS-0008 | Asia Center, Level G                                          | CCS2    | 180.0 | 8.50  | Active   | Available |
+| 1009 | EVS-0009 | Central Phom Phothiya                                         | Type2   | 11.0  | 9.00  | Active   | Available |
+| 2001 | EVS-0001 | Siam Paragon, Level B1                                        | Type2   | 3.7   | 3.50  | Active   | Available |
+| 2002 | EVS-0002 | CentralWorld, Parking P2                                      | CCS2    | 7.4   | 4.25  | Active   | Booked    |
+| 2003 | EVS-0003 | ICONSIAM, Level G                                             | CHAdeMO | 11.0  | 5.00  | Active   | Available |
+| 2004 | EVS-0004 | Mega Bangna, Zone A                                           | GB-T    | 22.0  | 6.00  | Active   | Available |
+| 2005 | EVS-0005 | Central Rama 9                                                | Type2   | 50.0  | 6.50  | Active   | Available |
+| 2006 | EVS-0006 | Biking Sathorn, Level 2                                       | CCS2    | 60.0  | 7.00  | Active   | Booked    |
+| 2007 | EVS-0007 | Lat Phrao, Thairath 2                                         | CHAdeMO | 120.0 | 7.50  | Active   | Available |
+| 2008 | EVS-0008 | Asia Center, Level G                                          | GB-T    | 150.0 | 8.00  | Active   | Available |
+| 2009 | EVS-0009 | Central Phom Phothiya                                         | Type2   | 180.0 | 9.50  | Active   | Available |
+| 2010 | EVS-0010 | Paragon, Former Project                                       | CCS2    | 350.0 | 15.50 | Active   | Booked    |
+| 2011 | EVS-0011 | Siam Paragon EV Station, New Basement Project and Parking Lot | CHAdeMO | 3.7   | 3.50  | Active   | Available |
+| 2012 | EVS-0012 | Siam Paragon, Level B1                                        | GB-T    | 7.4   | 4.25  | Active   | Available |
+| 2013 | EVS-0013 | CentralWorld, Parking P2                                      | Type2   | 11.0  | 5.00  | Inactive | -         |
+| 2014 | EVS-0014 | ICONSIAM, Level G                                             | CCS2    | 22.0  | 6.00  | Active   | Booked    |
+| 2015 | EVS-0015 | Mega Bangna, Zone A                                           | CHAdeMO | 50.0  | 6.50  | Active   | Available |
+| 2016 | EVS-0016 | Central Rama 9                                                | GB-T    | 60.0  | 7.00  | Active   | Available |
+| 2018 | EVS-0018 | Lat Phrao, Thairath 2                                         | CCS2    | 150.0 | 8.00  | Active   | Booked    |
+| 2019 | EVS-0019 | Asia Center, Level G                                          | CHAdeMO | 180.0 | 9.50  | Active   | Available |
+| 2020 | EVS-0020 | Central Phom Phothiya                                         | GB-T    | 350.0 | 15.50 | Active   | Available |
+| 2021 | EVS-0021 | Paragon, Former Project                                       | Type2   | 3.7   | 3.50  | Active   | Available |
+| 2022 | EVS-0022 | Siam Paragon EV Station, New Basement Project and Parking Lot | CCS2    | 7.4   | 4.25  | Active   | Booked    |
+| 2023 | EVS-0023 | Siam Paragon, Level B1                                        | CHAdeMO | 11.0  | 5.00  | Active   | Available |
+| 2024 | EVS-0024 | CentralWorld, Parking P2                                      | GB-T    | 22.0  | 6.00  | Active   | Available |
+| 2025 | EVS-0025 | ICONSIAM, Level G                                             | Type2   | 50.0  | 6.50  | Active   | Available |
+| 2026 | EVS-0001 | Mega Bangna, Zone A                                           | CCS2    | 60.0  | 7.00  | Inactive | -         |
+| 2027 | EVS-0002 | Central Rama 9                                                | CHAdeMO | 120.0 | 7.50  | Active   | Available |
+| 2028 | EVS-0003 | Biking Sathorn, Level 2                                       | GB-T    | 150.0 | 8.00  | Active   | Available |
+| 2029 | EVS-0004 | Lat Phrao, Thairath 2                                         | Type2   | 180.0 | 9.50  | Active   | Available |
+| 2030 | EVS-0005 | Asia Center, Level G                                          | CCS2    | 350.0 | 15.50 | Active   | Booked    |
+| 2031 | EVS-0006 | Central Phom Phothiya                                         | CHAdeMO | 3.7   | 3.50  | Active   | Available |
+| 2032 | EVS-0007 | Paragon, Former Project                                       | GB-T    | 7.4   | 4.25  | Active   | Available |
+| 2033 | EVS-0008 | Siam Paragon EV Station, New Basement Project and Parking Lot | Type2   | 11.0  | 5.00  | Active   | Available |
+| 2034 | EVS-0009 | Siam Paragon, Level B1                                        | CCS2    | 22.0  | 6.00  | Active   | Booked    |
+| 2035 | EVS-0010 | CentralWorld, Parking P2                                      | CHAdeMO | 50.0  | 6.50  | Active   | Available |
+| 2036 | EVS-0011 | ICONSIAM, Level G                                             | GB-T    | 60.0  | 7.00  | Active   | Available |
+| 2037 | EVS-0012 | Mega Bangna, Zone A                                           | Type2   | 120.0 | 7.50  | Active   | Available |
+| 2038 | EVS-0013 | Central Rama 9                                                | CCS2    | 150.0 | 8.00  | Active   | Booked    |
+| 2039 | EVS-0014 | Biking Sathorn, Level 2                                       | CHAdeMO | 180.0 | 9.50  | Inactive | -         |
+| 2040 | EVS-0015 | Lat Phrao, Thairath 2                                         | GB-T    | 350.0 | 15.50 | Active   | Available |
+| 2041 | EVS-0016 | Asia Center, Level G                                          | Type2   | 3.7   | 3.50  | Active   | Available |
+| 2042 | EVS-0017 | Central Phom Phothiya                                         | CCS2    | 7.4   | 4.25  | Active   | Booked    |
+| 2043 | EVS-0018 | Paragon, Former Project                                       | CHAdeMO | 11.0  | 5.00  | Active   | Available |
+| 2044 | EVS-0019 | Siam Paragon EV Station, New Basement Project and Parking Lot | GB-T    | 22.0  | 6.00  | Active   | Available |
+| 2045 | EVS-0020 | Siam Paragon, Level B1                                        | Type2   | 50.0  | 6.50  | Active   | Available |
++------+----------+---------------------------------------------------------------+---------+-------+-------+----------+-----------+
+
+[SUMMARY] Summary
+----------------------------------------------------------------------------
++------------------------+-------------------------------------------------+
+| Item                   | Value                                           |
++------------------------+-------------------------------------------------+
+| Active Charging Points | 53                                              |
+| Available Now          | 37                                              |
+| Currently Booked       | 13                                              |
+| Inactive Points        | 3                                               |
+| Deleted Points         | 2                                               |
+| Log Events             | 69                                              |
+| Records in index.dat   | 56                                              |
+| Binary sources         | charge_points.dat, charge_points.log, index.dat |
+| Source files           | charge_points.dat, charge_points.log, index.dat |
++------------------------+-------------------------------------------------+
